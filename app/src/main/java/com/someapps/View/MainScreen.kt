@@ -14,7 +14,9 @@ import com.someapps.Model.Screen
 fun MainScreen(navController: NavHostController) {
     Column(
         modifier = Modifier
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(text="Active sensor information",
