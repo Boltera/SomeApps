@@ -66,7 +66,6 @@ fun SensorInformation() {
     val AllSensorEventListener = object : SensorEventListener {
         override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) {
         }
-
         override fun onSensorChanged(event: SensorEvent) {
             if(event.sensor.type == Sensor.TYPE_LIGHT) {
                 lightSensorValue.value = event.values[0].toString()
