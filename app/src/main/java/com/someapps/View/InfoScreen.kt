@@ -5,6 +5,7 @@ import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
+import android.view.Gravity
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -27,6 +28,7 @@ fun infoScreen(navController: NavController){
     ) {
         proximityValue()
         accelerometerValue()
+        GravityValue()
         Text(
             text="Back to home",
             modifier = Modifier
@@ -41,6 +43,58 @@ fun infoScreen(navController: NavController){
     }
 }
 
+@Composable
+fun LightValue(){
+    val ctx= LocalContext.current
+    val sensorManager: SensorManager = ctx.getSystemService(Context.SENSOR_SERVICE) as SensorManager
+    val lightSensor: Sensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT)
+    val sensorV = remember {
+        mutableStateOf("")
+    }
+    val lightSensorEventListener = object : SensorEventListener {
+        override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) {
+        }
+
+        override fun onSensorChanged(event: SensorEvent) {
+            if(event.sensor.type == Sensor.TYPE_LIGHT) {
+                sensorV.value = event.values.toString()
+            }
+        }
+    }
+}
+
+@Composable
+fun GravityValue(){
+    val ctx= LocalContext.current
+    val sensorManager: SensorManager = ctx.getSystemService(Context.SENSOR_SERVICE) as SensorManager
+    val gravitySensor: Sensor = sensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY)
+    val sensorV = remember {
+        mutableStateOf("")
+    }
+    val gravitySensorEventListener = object : SensorEventListener {
+        override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) {
+        }
+
+        override fun onSensorChanged(event: SensorEvent) {
+            if(event.sensor.type == Sensor.TYPE_GRAVITY) {
+                val sensorVlist: List<Float> = listOf(event.values[0],event.values[1],event.values[2])
+                sensorV.value = sensorVlist.toString()
+            }
+        }
+    }
+    sensorManager.registerListener(
+        gravitySensorEventListener,
+        gravitySensor,
+        SensorManager.SENSOR_DELAY_NORMAL
+    )
+    Column(modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally) {
+        Text("Gravity sensor value:")
+        Text(text = sensorV.value)
+    }
+}
+
+//show accelerometer value
 @Composable
 fun accelerometerValue(){
     val ctx= LocalContext.current
