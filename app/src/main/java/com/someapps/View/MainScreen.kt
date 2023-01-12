@@ -12,6 +12,7 @@ import com.someapps.Model.Screen
 
 @Composable
 fun MainScreen(navController: NavHostController) {
+    //Use column display content
     Column(
         modifier = Modifier
             .fillMaxWidth()

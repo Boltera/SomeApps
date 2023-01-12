@@ -19,7 +19,7 @@ import androidx.navigation.NavController
 import com.someapps.Model.Screen
 
 @Composable
-fun infoScreen(navController: NavController){
+fun InfoScreen(navController: NavController){
     Column(
         modifier = Modifier
             .fillMaxWidth(),
@@ -63,7 +63,7 @@ fun SensorInformation() {
         mutableStateOf("")
     }
     //Create sensor listener
-    val AllSensorEventListener = object : SensorEventListener {
+    val allSensorEventListener = object : SensorEventListener {
         override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) {
         }
         override fun onSensorChanged(event: SensorEvent) {
@@ -82,24 +82,24 @@ fun SensorInformation() {
         }
     }
     sensorManager.registerListener(
-        AllSensorEventListener,
+        allSensorEventListener,
         lightSensor,
         SensorManager.SENSOR_DELAY_NORMAL
     )
     sensorManager.registerListener(
-        AllSensorEventListener,
+        allSensorEventListener,
         proximitySensor,
         SensorManager.SENSOR_DELAY_NORMAL
     )
     sensorManager.registerListener(
-        AllSensorEventListener,
+        allSensorEventListener,
         accelerometerSensor,
-        10*1000000000
+        SensorManager.SENSOR_DELAY_NORMAL
     )
     sensorManager.registerListener(
-        AllSensorEventListener,
+        allSensorEventListener,
         gravitySensor,
-        10*1000000000
+        SensorManager.SENSOR_DELAY_NORMAL
     )
     Column(modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally) {
