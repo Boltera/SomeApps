@@ -25,10 +25,7 @@ fun infoScreen(navController: NavController){
             .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        proximityValue()
-        accelerometerValue()
-        GravityValue()
-        LightValue()
+        SensorInformation()
         Text(
             text="Back to home",
             modifier = Modifier
@@ -44,133 +41,76 @@ fun infoScreen(navController: NavController){
 }
 
 @Composable
-fun LightValue(){
-    val ctx= LocalContext.current
+fun SensorInformation() {
+    val ctx = LocalContext.current
     val sensorManager: SensorManager = ctx.getSystemService(Context.SENSOR_SERVICE) as SensorManager
+    //setup sensor
     val lightSensor: Sensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT)
-    val sensorV = remember {
+    val proximitySensor: Sensor = sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY)
+    val accelerometerSensor: Sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
+    val gravitySensor: Sensor = sensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY)
+    //store sensor value
+    val lightSensorValue = remember {
         mutableStateOf("")
     }
-    val lightSensorEventListener = object : SensorEventListener {
+    val proximitySensorValue = remember {
+        mutableStateOf("")
+    }
+    val accelerometerSensorValue = remember {
+        mutableStateOf("")
+    }
+    val gravitySensorValue = remember {
+        mutableStateOf("")
+    }
+    //Create sensor listener
+    val AllSensorEventListener = object : SensorEventListener {
         override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) {
         }
 
         override fun onSensorChanged(event: SensorEvent) {
             if(event.sensor.type == Sensor.TYPE_LIGHT) {
-                sensorV.value = event.values[0].toString()
+                lightSensorValue.value = event.values[0].toString()
+            }
+            if(event.sensor.type == Sensor.TYPE_PROXIMITY) {
+                proximitySensorValue.value = event.values[0].toString()
+            }
+            if(event.sensor.type == Sensor.TYPE_ACCELEROMETER) {
+                accelerometerSensorValue.value = listOf(event.values[0],event.values[1],event.values[2]).toString()
+            }
+            if(event.sensor.type == Sensor.TYPE_GRAVITY) {
+                gravitySensorValue.value = listOf(event.values[0],event.values[1],event.values[2]).toString()
             }
         }
     }
     sensorManager.registerListener(
-        lightSensorEventListener,
+        AllSensorEventListener,
         lightSensor,
         SensorManager.SENSOR_DELAY_NORMAL
     )
-    Column(modifier = Modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally) {
-        Text("Light sensor value")
-        Text(text = sensorV.value)
-    }
-}
-
-@Composable
-fun GravityValue(){
-    val ctx= LocalContext.current
-    val sensorManager: SensorManager = ctx.getSystemService(Context.SENSOR_SERVICE) as SensorManager
-    val gravitySensor: Sensor = sensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY)
-    var sensorVlist: List<Float>
-    val sensorV = remember {
-        mutableStateOf("")
-    }
-    val gravitySensorEventListener = object : SensorEventListener {
-        override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) {
-        }
-
-        override fun onSensorChanged(event: SensorEvent) {
-            if(event.sensor.type == Sensor.TYPE_GRAVITY) {
-                sensorVlist = listOf(event.values[0],event.values[1],event.values[2])
-                sensorV.value = sensorVlist.toString()
-            }
-        }
-    }
     sensorManager.registerListener(
-        gravitySensorEventListener,
-        gravitySensor,
-        SensorManager.SENSOR_DELAY_NORMAL
-    )
-    Column(modifier = Modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally) {
-        Text("Gravity sensor value:")
-        Text(text = sensorV.value)
-    }
-}
-
-//show accelerometer value
-@Composable
-fun accelerometerValue(){
-    val ctx= LocalContext.current
-    val sensorManager: SensorManager = ctx.getSystemService(Context.SENSOR_SERVICE) as SensorManager
-    val accelerometerSensor: Sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
-    var sensorVlist: List<Float>
-    val sensorV = remember {
-        mutableStateOf("")
-    }
-    val accelerometerSensorEventListener = object : SensorEventListener {
-        override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) {
-        }
-
-        override fun onSensorChanged(event: SensorEvent) {
-            if(event.sensor.type == Sensor.TYPE_ACCELEROMETER) {
-                sensorVlist = listOf(event.values[0],event.values[1],event.values[2])
-                sensorV.value = sensorVlist.toString()
-            }
-        }
-    }
-    sensorManager.registerListener(
-        accelerometerSensorEventListener,
-        accelerometerSensor,
-        SensorManager.SENSOR_DELAY_NORMAL
-    )
-    Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(text = "AccelerometerValue:")
-        Text(text = sensorV.value)
-    }
-}
-
-//Show proximity sensor detection
-@Composable
-fun proximityValue(){
-    val ctx = LocalContext.current
-    val sensorManager: SensorManager = ctx.getSystemService(Context.SENSOR_SERVICE) as SensorManager
-    val proximitySensor: Sensor = sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY)
-    val sensorStatus = remember {
-        mutableStateOf("")
-    }
-    val proximitySensorEventListener = object : SensorEventListener {
-        override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) {
-        }
-
-        override fun onSensorChanged(event: SensorEvent) {
-            if (event.sensor.type == Sensor.TYPE_PROXIMITY) {
-                if (event.values[0] < 5f) {
-                    sensorStatus.value = "Near"
-                } else {
-                    sensorStatus.value = "Away"
-                }
-            }
-        }
-    }
-    sensorManager.registerListener(
-        proximitySensorEventListener,
+        AllSensorEventListener,
         proximitySensor,
         SensorManager.SENSOR_DELAY_NORMAL
     )
-    Column(
-        modifier = Modifier
-            .fillMaxWidth(),
-    horizontalAlignment = Alignment.CenterHorizontally
-    ){
-        Text(text = "Proximity Sensor detected object:")
-        Text(text = sensorStatus.value)
+    sensorManager.registerListener(
+        AllSensorEventListener,
+        accelerometerSensor,
+        10*1000000000
+    )
+    sensorManager.registerListener(
+        AllSensorEventListener,
+        gravitySensor,
+        10*1000000000
+    )
+    Column(modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally) {
+        Text("Light sensor:")
+        Text(text = lightSensorValue.value)
+        Text("Proximity sensor:")
+        Text(text = proximitySensorValue.value)
+        Text("Accelerometer sensor")
+        Text(text = accelerometerSensorValue.value)
+        Text("Gravity sensor")
+        Text(text = gravitySensorValue.value)
     }
 }
