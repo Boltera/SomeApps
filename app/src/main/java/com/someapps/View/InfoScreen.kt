@@ -46,12 +46,17 @@ fun accelerometerValue(){
     val ctx= LocalContext.current
     val sensorManager: SensorManager = ctx.getSystemService(Context.SENSOR_SERVICE) as SensorManager
     val accelerometerSensor: Sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
+    val sensorV = remember {
+        mutableStateOf("")
+    }
     val accelerometerSensorEventListener = object : SensorEventListener {
         override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) {
         }
 
         override fun onSensorChanged(event: SensorEvent) {
             if(event.sensor.type == Sensor.TYPE_ACCELEROMETER) {
+                val sensorVlist: List<Float> = listOf(event.values[0],event.values[1],event.values[2])
+                sensorV.value = sensorVlist.toString()
             }
         }
     }
@@ -62,6 +67,7 @@ fun accelerometerValue(){
     )
     Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
         Text(text = "AccelerometerValue:")
+        Text(text = sensorV.value)
     }
 }
 
