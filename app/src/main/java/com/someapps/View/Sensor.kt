@@ -3,10 +3,13 @@ package com.someapps.View
 import android.content.Context
 import android.hardware.Sensor
 import android.hardware.SensorManager
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -42,19 +45,29 @@ fun SensorList(navController: NavController){
             ){
                 //run display sensors function
                 DisplaySensors()
-                Text(
-                    text = "Back to home",
-                    // add clickable property to text
-                    modifier = Modifier.clickable {
-                        // navigate screen to main screen
-                        navController.navigate(Screen.MainScreen.route) {
-                            // avoid it stack more screen when back to main screen
-                            popUpTo(route = Screen.MainScreen.route) {
-                                inclusive = true
+                Card(
+                    shape = RoundedCornerShape(25),
+                    border = BorderStroke(width = 2.dp, Color.Black),
+                    modifier = Modifier
+                        .padding(10.dp,10.dp)
+                        .clickable {
+                            // navigate screen to main screen
+                            navController.navigate(Screen.MainScreen.route) {
+                                // avoid it stack more screen when back to main screen
+                                popUpTo(route = Screen.MainScreen.route) {
+                                    inclusive = true
+                                }
                             }
                         }
-                    }
-                )
+                ) {
+                    Text(
+                        text = "Back to home",
+                        // add clickable property to text
+                        modifier = Modifier
+                            .padding(10.dp,10.dp)
+
+                    )
+                }
             }
         }
     }
